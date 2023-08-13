@@ -1,0 +1,111 @@
+<template>
+    <Modal
+        v-model="fashionsStore.addModal"
+        title="Модел қўшиш"
+        :mask-closable = "false"
+        :closable = "false"
+        width="768"
+    >
+
+        <Form ref="formValidate" :label-width="180">
+            <FormItem label="* Код" class="ivu-mb">
+                <Input v-model="fashionsStore.fashion.code" placeholder="Код"></Input>
+                <Text :class="{ 'd-none': !code_err }" type="danger">Тўлдириш мажбурий!</Text>
+            </FormItem>
+            <FormItem label="* Номи" class="ivu-mb">
+                <Input v-model="fashionsStore.fashion.name" placeholder="Модел номи"></Input>
+                <Text :class="{ 'd-none': !name_err }" type="danger">Тўлдириш мажбурий!</Text>
+            </FormItem>
+            <FormItem label="* Категория" prop="categoryId" class="ivu-mb">
+                <Select v-model="fashionsStore.fashion.fashion_category_id" placeholder="Категория">
+                    <Option v-for="category in fashionsStore.categories" :value="category.id" :key="category.id" v-bind:value="category.id">{{ category.name }}</Option>
+                </Select>
+            </FormItem>
+            <FormItem label="Қисқача маълумот" class="ivu-mb">
+                <Input type="textarea" :rows="4" v-model="fashionsStore.fashion.description" placeholder="Қисқача маълумот"></Input>
+            </FormItem>
+        </Form>
+        <template #footer>
+            <Button @click="fashionsStore.addModal = false">Беркитиш</Button>
+            <Button type="primary" @click="addFashion" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Махсулот...':'Сақлаш'}}</Button>
+        </template>
+    </Modal>
+</template>
+
+<script>
+import {useFashionsStore} from "../../../stores/FashionsStore";
+
+export default {
+    name: "Add Fashion Modal",
+    setup() {
+        const fashionsStore = useFashionsStore()
+
+        return { fashionsStore }
+    },
+    data(){
+        return {
+            isAdding: false,
+
+            name_err  : false,
+            code_err  : false,
+            category_err  : false,
+            is_invalid: false,
+        }
+    },
+    methods: {
+        async addFashion() {
+            this.isAdding = true
+            if(this.fashionsStore.fashion.code == '') {
+                this.is_invalid = true
+                this.code_err   = true
+            } else {
+                this.code_err   = false
+            }
+
+            if(this.fashionsStore.fashion.name == '') {
+                this.is_invalid = true
+                this.name_err   = true
+            } else {
+                this.name_err   = false
+            }
+
+            if(this.fashionsStore.fashion.fashion_category_id == '') {
+                this.is_invalid = true
+                this.category_err   = true
+            } else {
+                this.category_err   = false
+            }
+
+            if(this.is_invalid) {
+                this.is_invalid = false
+                this.isAdding = false
+                return this.err('Барча катакларни тўлдириш мажбурий!')
+            }
+
+            const res = await this.callApi('post', '/app/add_fashion', this.fashionsStore.fashion)
+
+            if(res.status == 200) {
+                this.isAdding = false
+                this.fashionsStore.fashions.unshift(res.data);
+
+                this.s('Андоза мувоффақиятли қўшилди!')
+                this.fashionsStore.addModal = false
+                this.fashionsStore.fashion = {}
+
+            } else {
+                if(res.status == 422) {
+                    if(res.data.errors.name) {
+                        this.err(res.data.errors.name[0])
+                    }
+                } else {
+                    this.swr()
+                }
+            }
+        },
+    },
+}
+</script>
+
+<style scoped>
+
+</style>
