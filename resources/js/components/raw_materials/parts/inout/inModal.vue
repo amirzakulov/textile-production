@@ -166,7 +166,7 @@ export default {
                 created_date: this.myDateFormat(this.rmStore.created_date, "yyyy-mm-dd"),
             }
 
-            console.log(incomeDetails)
+
             const res = await this.callApi('post', '/app/add_rmset_income_products', incomeDetails)
             console.log(res.data)
 

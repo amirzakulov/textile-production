@@ -1,97 +1,27 @@
 <template>
     <div :class="{'sidebar-mini': sidebarMiniClass}">
-        <div>
-            <!--========== ADMIN SIDE MENU one ========-->
-            <div class="_1side_menu _1side_menu_bg" >
-<!--                <div class="_1side_menu_logo">-->
-<!--                    <h3 style="text-align:center; color: #fff;">Dowool Textile 2</h3>-->
-<!--                </div>-->
+        <div v-if="loggedUser">
 
-                <!--~~~~~~~~ MENU CONTENT ~~~~~~~~-->
+            <div class="_1side_menu _1side_menu_bg" >
                 <div class="_1side_menu_content">
 
-                    <!--~~~ MENU LIST ~~~~~~-->
                     <div class="_1side_menu_list">
                         <ul class="_1side_menu_list_ul">
-                            <li>
-                                <router-link :to="{name: 'home'}" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/home') }" :href="href" @click="navigate">
-                                        <Icon type="md-home" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Маълумотлар тахтаси</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{name: 'rawMaterials', params: {category_id: 1} }" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/raw-materials') }" :href="href" @click="navigate">
-                                        <Icon type="logo-dropbox" size="24"/>
-                                        <div class="_1side_menu_list_ul_item_text">Хомашё омбори</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link :to="{name: 'production'}" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/production') }" :href="href" @click="navigate">
-                                        <Icon type="ios-cube" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Ишлаб чиқариш</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/finished_products" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/finished_products') }" :href="href" @click="navigate">
-                                        <Icon type="ios-cart" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Тайёр махсулот</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/fashions" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/fashions') || subIsActive('/fashion') }" :href="href" @click="navigate">
-                                        <Icon type="ios-shirt" size="24"/>
-                                        <div class="_1side_menu_list_ul_item_text">Моделлар</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/employees" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/employees') || subIsActive('/employee') }" :href="href" @click="navigate">
-                                        <Icon type="ios-people" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Ходимлар</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/expenses" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/expenses') }" :href="href" @click="navigate">
-                                        <Icon type="md-calculator" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Харажатлар</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/currency_rates" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/currency_rates') }" :href="href" @click="navigate">
-                                        <Icon type="logo-usd" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Валюталар</div>
-                                    </a>
-                                </router-link>
-                            </li>
-                            <li>
-                                <router-link to="/reports" custom v-slot="{ href, navigate, isActive, isExactActive }">
-                                    <a :class="{ 'router-link-exact-active sidebar-link': isActive || isExactActive || subIsActive('/reports') }" :href="href" @click="navigate">
-                                        <Icon type="md-stats" size="24" />
-                                        <div class="_1side_menu_list_ul_item_text">Хисоботлар</div>
-                                    </a>
-                                </router-link>
-                            </li>
+                            <template v-for="(permission, i) in permissions" :key="i" v-if="permissions.length">
+                                <li v-if="!permission.subPage && permission.read">
+                                    <router-link :to="permission.name" custom v-slot="{ href, navigate, isActive, isExactActive }">
+                                        <a :class="{ 'router-link-exact-active sidebar-link': subIsActiveFirst(permission.name) }" :href="href" @click="navigate">
+                                            <Icon :type="permission.icon" size="24" />
+                                            <div style="font-size: 12px;">{{ permission.resourceName }}</div>
+                                        </a>
+                                    </router-link>
+                                </li>
+                            </template>
                         </ul>
                     </div>
                 </div>
             </div>
-            <!--========== ADMIN SIDE MENU ========-->
 
-            <!--========= HEADER ==========-->
             <div class="header">
                 <div class="_2menu _box_shadow">
 
@@ -109,18 +39,16 @@
                             Курс: 1$= <strong class="text-danger">{{ currencyStore.dollarRate.rate }}</strong> сўм <br/>
                             Сана: <span class="text-danger">{{ myDateFormat(currencyStore.dollarRate.updated_at, "mm.dd.yyyy") }}</span>
                         </li>
-                    </ul>
 
-<!--                    <ul class="_2menu_ul" :class="{ 'd-none': !subIsActive('/production') }">-->
-<!--                        <li class="production-menu-item" :class="{ 'router-link-active': !subIsActive('/production/') }">-->
-<!--                            <router-link :to="{ name: 'production' }" class="production-menu-link">Ишлаб чиқариш</router-link>-->
-<!--                        </li>-->
-<!--                    </ul>-->
+                    </ul>
 
                     <ul class="_2menu_ul" :class="{ 'd-none': !subIsActive('/production') }">
                         <li class="production-menu-item" :class="{ 'router-link-active': !subIsActive('/production/') }">
                             <router-link :to="{ name: 'production' }" class="production-menu-link">Ишлаб чиқариш</router-link>
                         </li>
+                    </ul>
+
+                    <ul class="_2menu_ul" :class="{ 'd-none': !subIsActive('/production') }">
                         <template v-for="(department, d) in productionDepartments" :key="d">
                             <li class="production-menu-item" :class="{ 'router-link-active': subIsActive('/production/'+department.id) }">
                                 <router-link :to="{ name: 'productionRawMaterialsStock', params: {department_id: department.id} }" class="production-menu-link">{{department.name}}</router-link>
@@ -140,18 +68,43 @@
                             <router-link :to="{ name: 'otherExpenses'}" class="production-menu-link">Қўшимча харажатлар</router-link>
                         </li>
                     </ul>
+
+
                 </div>
+<!--                <ul class="open_button float-right">-->
+<!--                    <li class="float-right1 text-center">-->
+<!--                        <a href="/logout">-->
+<!--                            <Icon type="ios-log-out" size="20" color="#ff0000" />-->
+<!--                            <div>Чиқиш</div>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li class="float-right1 text-center">-->
+<!--                        <a href="/logout">-->
+<!--                            <Icon type="ios-log-out" size="20" color="#ff0000" />-->
+<!--                            <div>Чиқиш</div>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
 
                 <div class="_2menu _2menu_ceta">
-                    <div class="_1side_menu_content">
+                    <div class="_1side_menu_content" style="width: 200px; text-align: right;">
                         <ul class="open_button">
-                            <li class="text-center"><Icon type="ios-person" /> Admin</li>
+                            <li class="text-center">
+                                <a href="javascript:void(0);">
+                                    <Icon type="md-person" size="20" color="#2b85e4" />
+                                    <div>{{usersStore.loggedUser.fullName}}</div>
+                                </a>
+                            </li>
+                            <li class="float-right1 text-center">
+                                <a href="/logout">
+                                    <Icon type="ios-log-out" size="20" color="#ff0000" />
+                                    <div>Чиқиш</div>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <!--========= HEADER ==========-->
-
         </div>
         <div class="content pl-0 pr-0">
             <div class="container-fluid pl-0 pr-0">
@@ -163,37 +116,59 @@
 
 <script>
 import {useCurrenciesStore} from "../stores/CurrenciesStore";
+import {useUsersStore} from "../stores/UsersStore";
 export default {
+    props: ['loggedUser', 'permissions'],
     setup(){
         const currencyStore = useCurrenciesStore()
-        return { currencyStore }
+        const usersStore = useUsersStore()
+        return { currencyStore, usersStore }
     },
     data() {
         return {
             productionDepartments: [],
-            expenseTypes: [],
-            sidebarMiniClass: false,
-            dollarRate: 0,
+            expenseTypes:       [],
+            sidebarMiniClass:   false,
+            dollarRate:         0,
+
+            isLoggedIn:         false,
         }
     },
     methods: {
         subIsActive(input) {
             const paths = Array.isArray(input) ? input : [input]
             return paths.some(path => {
-
-                let segment = this.$route.path.indexOf(path) === 0
-
-                return segment // current path starts with this path string
+                return this.$route.path.indexOf(path) === 0 // current path starts with this path string
             })
+        },
+        subIsActiveFirst(input) {
+            const pathArray = window.location.pathname.split("/");
+
+            input = input.replace('/', '')
+            if(pathArray[1] === input) {
+                return true;
+            } else {
+                return false;
+            }
         },
     },
     async created(){
-        let department_type = [2];//Ishlab chiqarish
-        const productionDepartments = await this.callApi('get', '/app/get_departments/'+department_type)
-        this.productionDepartments = productionDepartments.data
 
-        const currencyData = await this.callApi('get', '/app/get_currency_rate_last/1')
-        this.currencyStore.dollarRate = currencyData.data
+        this.usersStore.loggedUser = this.loggedUser
+        if(this.loggedUser) {
+            let department_type = [2];//Ishlab chiqarish
+            const [productionDepartments, currencyData] = await Promise.all([
+                this.callApi('get', '/app/get_departments/'+department_type),
+                this.callApi('get', '/app/get_currency_rate_last/1')
+            ]);
+            // const productionDepartments = await this.callApi('get', '/app/get_departments/'+department_type)
+            this.productionDepartments = productionDepartments.data
+
+            // const currencyData = await this.callApi('get', '/app/get_currency_rate_last/1')
+            this.currencyStore.dollarRate = currencyData.data
+        }
+
+
     },
 }
 </script>

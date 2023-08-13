@@ -1,5 +1,5 @@
 <template>
-    <Modal v-model="fashionsStore.deleteModal" width="360">
+    <Modal v-model="usersStore.deleteModal" width="360">
         <template #header>
             <p style="color:#f60;text-align:center">
                 <Icon type="ios-close-circle" size="20" />
@@ -10,7 +10,6 @@
             <p>Хақиқатдан хам ўчирасизми?</p>
         </div>
         <template #footer>
-<!--            <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteFashion">ХА</Button>-->
             <Row :gutter="8">
                 <Col span="12">
                     <Button type="error" size="large" long :loading="isDeleting" :disabled="isDeleting" @click="deleteItem">Хa</Button>
@@ -24,14 +23,14 @@
 </template>
 
 <script>
-import {useFashionsStore} from "../../../stores/FashionsStore";
+import {useUsersStore} from "../../../stores/UsersStore";
 
 export default {
     name: "Add Fashion Modal",
     setup() {
-        const fashionsStore = useFashionsStore()
+        const usersStore = useUsersStore()
 
-        return { fashionsStore }
+        return { usersStore }
     },
     data(){
         return {
@@ -40,20 +39,21 @@ export default {
     },
     methods: {
         async deleteItem() {
-
-            const res = await this.callApi("post", "/app/delete_fashion", this.fashionsStore.fashion)
+            this.isDeleting = true
+            const res = await this.callApi("post", "/app/delete_user", this.usersStore.user)
             if(res.status === 200) {
-                this.fashionsStore.fashions.splice(this.fashionsStore.rowIndex,1)
-                this.s('Андоза мувоффақиятли ўчирилди!')
+                this.usersStore.users.splice(this.usersStore.rowIndex,1)
+                this.usersStore.user = {}
+                this.s('Мувоффақиятли ўчирилди!')
             } else {
                 this.swr();
             }
 
             this.isDeleting = false
-            this.fashionsStore.deleteModal = false
+            this.usersStore.deleteModal = false
         },
         cancelDelete(){
-            this.fashionsStore.deleteModal = false
+            this.usersStore.deleteModal = false
         }
     },
 }

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\dbqueries\UsersModel;
 use App\Models\Role;
 use App\Models\User;
-use App\Http\Controllers\dbqueries\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Facade\Log;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class UsersController extends Controller
 {
-    protected $usersModel;
+    private $usersModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->usersModel = new UsersModel();
     }
 
@@ -34,18 +34,16 @@ class UsersController extends Controller
             return redirect('/');
         }
 
-
         return $this->checkPermissions($user, $request);
-        
     }
 
     public function checkPermissions($user, $request){
 
-        $permissions = json_decode($user->role->permission); 
-
+        $permissions   = json_decode($user->role->permission);
         $hasPermission = false;
 
         $main_path = $request->segment(1);
+
         if($main_path == '') {
             $main_path = '/';
         } else {
@@ -54,9 +52,7 @@ class UsersController extends Controller
 
         if(!is_null($permissions)){
             foreach($permissions as $permission){
-                
                 if($permission->name == $main_path) {
-                    
                     if($permission->read) {
                         $hasPermission = true;
                     }
@@ -76,33 +72,38 @@ class UsersController extends Controller
 
     public function getUsers()
     {
-        return $this->usersModel->getAdmins();
+        return DB::table("users as u")
+            ->select("u.*", "r.roleName")
+            ->leftJoin("roles as r", "r.id", "=", "u.role_id")
+            ->orderBy("u.fullName")
+            ->get();
     }
-
     public function getUser($user_id)
     {
-        return $this->usersModel->getUser($user_id);
+        return DB::table("users as u")
+            ->select("u.id", "u.fullName", "u.username", "u.role_id", "u.phone", "r.roleName")
+            ->leftJoin("roles as r", "r.id", "=", "u.role_id")
+            ->where("u.id", $user_id)
+            ->first();
     }
 
     public function addUser(Request $request)
     {
         $this->validate($request, [
             'fullName' => "required",
+            'username' => "required|unique:users",
             'password' => "bail|required|min:3",
             'role_id'  => "required",
-            'store_id' => "required",
         ]);
 
-        $username = $this->generateOrderId();
         $password = bcrypt($request->password);
         $arr = [
-            "username" => $username,
-            "fullName" => $request->fullName,
-            "phone"    => $request->phone,
-            "address"  => $request->address,
-            "password" => $password,
-            "role_id"  => $request->role_id,
-            "store_id" => $request->store_id,
+            'fullName' => $request->fullName,
+            'password' => $password,
+            'username' => $request->username,
+            'role_id'  => $request->role_id,
+            'address'  => $request->address,
+            'phone'    => $request->phone,
         ];
 
         return $this->usersModel->addUser($arr);
@@ -114,40 +115,41 @@ class UsersController extends Controller
         $this->validate($request, [
             'fullName' => "required",
             'username' => "required|unique:users,username,$request->id",
-            'password' => "min:3",
             'role_id' => "required",
-            'store_id' => "required",
         ]);
 
-        $data = [
+        if(!is_null($request->password)) {
+            $this->validate($request, [
+                'password' => "min:3",
+            ]);
+        }
+
+        $arr = [
             'fullName' => $request->fullName,
             'username' => $request->username,
             'role_id' => $request->role_id,
-            'store_id' => $request->store_id
         ];
 
         if(!empty($request->password)){
             $password = bcrypt($request->password);
-            $data["password"] = $password;
+            $arr["password"] = $password;
         }
 
-        $user = User::where('id', $request->id)->update($data);
-
-        return $this->getUser($request->id);
+        return $this->usersModel->update($request->id, $arr);
     }
 
     public function deleteUser(Request $request)
     {
         $this->validate($request, ['id' => "required",]);
 
-        return User::where('id', $request->id)->delete();
+        return $this->usersModel->delete($request->id);
     }
 
     public function login(Request $request)
     {
         $this->validate($request, [
             'username' => 'required',
-            'password' => 'required',
+            'password' => "bail|required|min:3",
         ]);
 
         if (Auth::attempt(["username" => $request->username, "password" => $request->password])) {
@@ -227,11 +229,5 @@ class UsersController extends Controller
         $authUser = Auth::user();
 
         return $this->getUser($authUser->id);
-    }
-
-    public function generateOrderId(){
-        $id = IdGenerator::generate(['table' => 'users', 'field' => 'username', 'length' => 6, 'prefix' => 'ad-']);
-  
-        return $id;
     }
 }

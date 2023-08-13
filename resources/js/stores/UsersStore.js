@@ -1,29 +1,19 @@
 import {defineStore} from 'pinia'
 
-export const useReportsStore = defineStore("reportsStore", {
+export const useUsersStore = defineStore("usersStore", {
     state: () => {
         return {
-            reportTypes: [
-                "Тайёр махсулот кирим",
-                "Тайёр махсулот чиқим",
-                "Хомашё кирим",
-                "Хомашё чиқим",
-                "Коммунал харажатлар",
-                "Қўшимча харажатлар",
-                "Ойлик маош",
-            ],
-            formData: {
-                reportType: 0,
-                startDate:  '',
-                endDate:    '',
-            },
-            productionData: {
-                department_id: '',
-                inout: '',
-            },
-            tableData: [],
-            loading: true,
+            users: [],
+            user: {},
 
+            addModal: false,
+            editModal: false,
+            deleteModal: false,
+
+            roles: [],
+            role: {},
+            loggedUser: {},
+            rowIndex: 0,
 
         }
     },

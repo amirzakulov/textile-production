@@ -38,13 +38,13 @@ export default {
             if(this.data.password === '')           return this.err('Parol majburiy.')
             this.isLogging = true
             const res = await this.callApi('post', '/app/login', this.data)
-            // console.log(res.data)
+            console.log(res.data)
             if(res.status === 200){
                 this.s(res.data.msg)
                 window.location = '/'
             } else {
                 if(res.data === 401) {
-                    this.i(res.data.msg)
+                    this.err(res.data.msg)
                 } else {
                     this.swr("Username yoki parol noto'g'ri");
                 }

@@ -15,7 +15,7 @@
                     </Form>
                 </Col>
             </Row>
-            
+
         </p>
 
         <div class="_overflow _table_div">
@@ -63,16 +63,17 @@ export default {
             roles: [],
             permissions: [],
             defaultPermissions: [
-                {resourceName: "Маълумотлар",  read: false, write: false, update: false, delete: false, name: '/',         subPage: false, icon:'md-home'},
-                {resourceName: "Махсулотлар",  read: false, write: false, update: false, delete: false, name: '/products',  subPage: false, icon:'ios-construct'},
-                {resourceName: "Харидолар",    read: false, write: false, update: false, delete: false, name: '/clients',   subPage: false, icon: 'ios-people'},
-                {resourceName: "Омборлар",     read: false, write: false, update: false, delete: false, name: '/stocks',   subPage: false, icon: 'md-list-box'},
-                {resourceName: "Таралар",      read: false, write: false, update: false, delete: false, name: '/tares',   subPage: false, icon: 'train'},
-                {resourceName: "Фойдаланувчилар",      read: false, write: false, update: false, delete: false, name: '/users',     subPage: false, icon: 'md-people'},
-                {resourceName: "Roles",        read: false, write: false, update: false, delete: false, name: '/users/roles', subPage: true, icon: ''},
-                {resourceName: "Assign Role",  read: false, write: false, update: false, delete: false, name: '/users/assignRole', subPage: true, icon: ''},
-                {resourceName: "Хисоботлар",   read: false, write: false, update: false, delete: false, name: '/reports',   subPage: false, icon: 'md-calculator'},
-                {resourceName: "Созламалар",   read: false, write: false, update: false, delete: false, name: '/settings',  subPage: false, icon: 'md-settings'},
+                {resourceName:"Маълумотлар тахтаси",read:true,"write":true,update:true,delete:true,name:"/",subPage:false,icon:"md-home"},
+                {resourceName:"Хомашё омбори",read:true,"write":true,update:true,delete:true,name:"/raw-materials",subPage:false,icon:"logo-dropbox"},
+                {resourceName:"Ишлаб чиқариш",read:true,"write":true,update:true,delete:true,name:"/production",subPage:false,icon:"ios-cube"},
+                {resourceName:"Тайёр махсулот",read:true,"write":true,update:true,delete:true,name:"/finished_products",subPage:true,icon:"ios-cart"},
+                {resourceName:"Моделлар",read:true,"write":true,update:true,delete:true,name:"/fashions",subPage:false,icon:"ios-shirt"},
+                {resourceName:"Фойдаланувчилар",read:true,"write":true,update:true,delete:true,name:"/users",subPage:false,icon:"md-people"},
+                {resourceName:"Roles",read:true,"write":true,update:true,delete:true,name:"/roles",subPage:false,icon:"ios-key"},
+                {resourceName:"Ходимлар",read:true,"write":true,update:true,delete:true,name:"/employees",subPage:false,icon:"ios-people"},
+                {resourceName:"Харажатлар",read:true,"write":true,update:true,delete:true,name:"/expenses",subPage:false,icon:"md-calculator"},
+                {resourceName:"Валюталар",read:true,"write":true,update:true,delete:true,name:"/currency_rates",subPage:false,icon:"logo-usd"},
+                {resourceName:"Хисоботлар",read:true,"write":true,update:true,delete:true,name:"/reports",subPage:false,icon:"md-people"}
             ],
             role: {},
             selected_role_id: 1,
@@ -103,10 +104,8 @@ export default {
             let index = this.roles.findIndex(role => role.id == this.data.id)
             let permission = this.roles[index].permission
 
-
-            console.log(this.roles[index]);
             this.selected_role_id = this.roles[index].id
-            
+
             if(!permission) {
                 this.permissions = this.defaultPermissions
             } else {
@@ -145,18 +144,18 @@ export default {
 
     async created(){
         console.log(this.permissions);
-        const roles = await this.callApi('get', '/app/get_roles') 
+        const roles = await this.callApi('get', '/app/get_roles')
         console.log(roles);
         if(roles.status == 200) {
             this.roles = roles.data
-            if(roles.data.length) { 
+            if(roles.data.length) {
                 this.data.id = roles.data[0].id
                 if(roles.data[0].permission) {
                     this.permissions = JSON.parse(roles.data[0].permission)
                 } else {
                     this.permissions = this.defaultPermissions
                 }
-            } 
+            }
         }
 
         this.permissions.forEach((permission, index) => {

@@ -10,6 +10,7 @@ use App\Http\Controllers\dbQueries\RawMaterialBalanceModel;
 use App\Http\Controllers\dbQueries\RawMaterialsModel;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RawMaterialsController extends Controller
 {
@@ -158,12 +159,13 @@ class RawMaterialsController extends Controller
         $department_id  = $request->department_id;
 
         $created_date = dateToDateTime($request->created_date);
+        $user         = Auth::user();
 
         //step 1 : create partiya
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
         $inoutSetArr = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            'user_id'           => $user->id,
             'inout'             => 1,
             'from_department_id'=> $inoutSet["from_department_id"],
             'to_department_id'  => $inoutSet["to_department_id"],
@@ -205,7 +207,7 @@ class RawMaterialsController extends Controller
                 "from_set_id"       => null,
                 "count"             => $product["count"],
                 "inout"             => 1,
-                "user_id"           => 1,
+                'user_id'           => $user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 "department_id"     => $department_id,
@@ -264,6 +266,7 @@ class RawMaterialsController extends Controller
 
         $set            = $this->inoutSetsModel->getSet($inoutSet["id"]);
         $created_date   = $set->created_date;
+        $user           = Auth::user();
 
         $dollar         = $this->currencyRateModel->getLastCurrencyRate(1);
         $currency_rate  = 1;
@@ -295,7 +298,7 @@ class RawMaterialsController extends Controller
             "from_set_id"       => null,
             "count"             => $product["count"],
             "inout"             => 1,
-            "user_id"           => 1,
+            "user_id"           => $user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "department_id"     => $department_id,
@@ -396,6 +399,7 @@ class RawMaterialsController extends Controller
         $created_date   = $request->created_date;
 
         $dateTime = dateToDateTime($created_date);
+        $user         = Auth::user();
 
         //step 1 : Partiya yaratamiz
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
@@ -427,7 +431,7 @@ class RawMaterialsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => (-1) * $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $dateTime,
@@ -444,7 +448,7 @@ class RawMaterialsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $dateTime,
@@ -623,6 +627,7 @@ class RawMaterialsController extends Controller
 
         $set            = $this->inoutSetsModel->getSet($inoutSet["id"]);
         $created_date   = $set->created_date;
+        $user         = Auth::user();
 
         //step 1 : create Raw Material Details
 //        $rawMaterial = $this->rawMaterialBalanceModel->getRawMaterial($product["raw_material_balance_id"], $department_id, $inoutSet["id"]);
@@ -636,7 +641,7 @@ class RawMaterialsController extends Controller
             "set_id"            => $inoutSet["id"],
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => (-1) * $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,
@@ -653,7 +658,7 @@ class RawMaterialsController extends Controller
             "set_id"            => $inoutSet["id"],
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,
@@ -842,12 +847,13 @@ class RawMaterialsController extends Controller
         $products       = $request->products;
         $department_id  = $request->department_id;
         $created_date   = dateToDateTime($request->created_date);
+        $user         = Auth::user();
 
         //step 1 : Partiya yaratamiz
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
         $inoutSetArr = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            'user_id'           => $user->id,
             'inout'             => 2,
             'from_department_id'=> $inoutSet["from_department_id"],
             'to_department_id'  => $inoutSet["to_department_id"],
@@ -872,7 +878,7 @@ class RawMaterialsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => (-1) * $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -889,7 +895,7 @@ class RawMaterialsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -1015,21 +1021,24 @@ class RawMaterialsController extends Controller
         $department_id      = $request->department_id;
         $from_department_id = $request->from_department_id;
         $to_department_id   = $request->to_department_id;
+        $set_id             = $request->set_id;
+        $from_set_id        = $request->from_set_id;
 
-        if($this->rawMaterialDetailsModel->isRawMaterialUsed($raw_material_id, $to_department_id)) return response()->json(false);
+        if($this->rawMaterialDetailsModel->isRawMaterialUsed($raw_material_id, $to_department_id, $set_id)) return response()->json(false);
 
         //Step 1: Raw Material Details ni update qilamiz
         $rmdOutArr = ["count" => (-1) * $count];
-        $rmd = $this->rawMaterialDetailsModel->updateByDepartmentId($raw_material_id, $from_department_id, 2, $rmdOutArr);
+        $rmd = $this->rawMaterialDetailsModel->updateByDepartmentId($raw_material_id, $from_department_id, 2, $set_id, $rmdOutArr);
 
         $rmdInArr = ["count" => $count];
-        $rmd = $this->rawMaterialDetailsModel->updateByDepartmentId($request->raw_material_id, $to_department_id, 1, $rmdInArr);
+        $rmd = $this->rawMaterialDetailsModel->updateByDepartmentId($request->raw_material_id, $to_department_id, 1, $set_id, $rmdInArr);
 
         //Step 4: Raw Material Balance ni update qilamiz
         $rmbCount = $stockCount - $count;
         $rmbOutArr = ['count' => $rmbCount];
         if($rmbCount === 0) {
-            $this->rawMaterialBalanceModel->delete($request->raw_material_id, $from_department_id, $request->set_id);
+//            $this->rawMaterialBalanceModel->delete($request->raw_material_id, $from_department_id, $request->set_id);
+            $this->rawMaterialBalanceModel->deleteBySetid($raw_material_id, $from_department_id, $from_set_id);
         } elseif ($request->stockCount === 0) {
             $rmBalanceArr = [
                 "raw_material_id"   => $raw_material_id,
@@ -1041,11 +1050,13 @@ class RawMaterialsController extends Controller
             ];
             $this->rawMaterialBalanceModel->add($rmBalanceArr);
         } else {
-            $this->rawMaterialBalanceModel->update($raw_material_id, $from_department_id, $request->set_id, $rmbOutArr);
+//            $this->rawMaterialBalanceModel->update($raw_material_id, $from_department_id, $request->set_id, $rmbOutArr);
+            $this->rawMaterialBalanceModel->updateBySetid($raw_material_id, $from_department_id, $from_set_id, $rmbOutArr);
         }
 
         $rmbInArr = ['count' => $count];
-        $this->rawMaterialBalanceModel->update($request->raw_material_id, $to_department_id, $request->set_id, $rmbInArr);
+//        $this->rawMaterialBalanceModel->update($request->raw_material_id, $to_department_id, $request->set_id, $rmbInArr);
+        $this->rawMaterialBalanceModel->updateBySetid($raw_material_id, $to_department_id, $set_id, $rmbInArr);
 
         return $this->rawMaterialDetailsModel->getSetRawMaterials($request->set_id, $request->inout, $department_id);
     }
@@ -1060,22 +1071,27 @@ class RawMaterialsController extends Controller
 
         $raw_material_id  = $request->id;
         $department_id    = $request->department_id;
-        $inout_set_id     = $request->set_id;
+//        $inout_set_id     = $request->set_id;
         $to_department_id = $request->to_department_id;
+        $set_id           = $request->set_id;
+        $from_set_id      = $request->from_set_id;
 
-        if($this->rawMaterialDetailsModel->isRawMaterialUsed($raw_material_id, $to_department_id)) return response()->json(false);
+        if($this->rawMaterialDetailsModel->isRawMaterialUsed($raw_material_id, $to_department_id, $set_id)) return response()->json(false);
 
         //Step 1: Raw Material Details table dan rawMaterialni malum partiyadan chiqim va kirimini delete qilamiz
-        $this->rawMaterialDetailsModel->deleteInOut($raw_material_id, $inout_set_id);
+        $this->rawMaterialDetailsModel->deleteInOut($raw_material_id, $set_id);
 
         //Step 2: Raw Material Balance table dagi chiqim qilingan rawMaterialni malum bulimda update qilamiz
-        $rmdCountOut    = $this->rawMaterialDetailsModel->getRawMaterialCount($raw_material_id, $department_id, $inout_set_id);
-        $rawMaterialOut = $this->rawMaterialBalanceModel->getRawMaterial($raw_material_id, $department_id, $inout_set_id);
+//        $rmdCountOut    = $this->rawMaterialDetailsModel->getRawMaterialCount($raw_material_id, $department_id, $inout_set_id);
+//        $rawMaterialOut = $this->rawMaterialBalanceModel->getRawMaterial($raw_material_id, $department_id, $inout_set_id);
+        $rmdCountOut = $this->rawMaterialDetailsModel->getRawMaterialCount($raw_material_id, $department_id, $from_set_id);
+        $rawMaterialOut = $this->rawMaterialBalanceModel->getRawMaterialBySetid($raw_material_id, $department_id, $from_set_id);
         if(!is_null($rawMaterialOut)){
             $rmbArr = [
                 'count' => $rmdCountOut,
             ];
-            $this->rawMaterialBalanceModel->update($raw_material_id, $department_id, $inout_set_id, $rmbArr);
+//            $this->rawMaterialBalanceModel->update($raw_material_id, $department_id, $inout_set_id, $rmbArr);
+            $this->rawMaterialBalanceModel->updateBySetid($raw_material_id, $department_id, $from_set_id, $rmbArr);
         } else {
             $rmBalanceArr = [
                 "raw_material_id"   => $raw_material_id,
@@ -1083,22 +1099,23 @@ class RawMaterialsController extends Controller
                 "count"             => $rmdCountOut,
                 "price"             => $request->price,
                 "department_id"     => $department_id,
-                "set_id"            => $inout_set_id,
+                "set_id"            => $from_set_id,
             ];
 
             $this->rawMaterialBalanceModel->add($rmBalanceArr);
         }
 
         //Step 3: Raw Material Balance table dagi kirim qilingan rawMaterialni malum bulimda update qilamiz
-        $rmdCountIn     = $this->rawMaterialDetailsModel->getRawMaterialCount($raw_material_id, $to_department_id, $inout_set_id);
-        if($rmdCountIn > 0){
-            $rmbArr = ['count' => $rmdCountIn];
-            $this->rawMaterialBalanceModel->update($raw_material_id, $to_department_id, $inout_set_id, $rmbArr);
-        } else {
-            $this->rawMaterialBalanceModel->delete($raw_material_id, $to_department_id, $inout_set_id);
-        }
+        $this->rawMaterialBalanceModel->deleteBySetid($raw_material_id, $to_department_id, $set_id);
+//        $rmdCountIn     = $this->rawMaterialDetailsModel->getRawMaterialCount($raw_material_id, $to_department_id, $inout_set_id);
+//        if($rmdCountIn > 0){
+//            $rmbArr = ['count' => $rmdCountIn];
+//            $this->rawMaterialBalanceModel->update($raw_material_id, $to_department_id, $inout_set_id, $rmbArr);
+//        } else {
+//            $this->rawMaterialBalanceModel->delete($raw_material_id, $to_department_id, $inout_set_id);
+//        }
 
-        return $this->rawMaterialDetailsModel->getSetRawMaterials($inout_set_id, 2, $department_id);
+        return $this->rawMaterialDetailsModel->getSetRawMaterials($set_id, 2, $department_id);
     }
 
 }

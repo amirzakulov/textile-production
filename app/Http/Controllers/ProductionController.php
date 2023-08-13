@@ -10,6 +10,7 @@ use App\Http\Controllers\dbQueries\RawMaterialBalanceModel;
 use App\Http\Controllers\dbQueries\DepartmentsModel;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use phpDocumentor\Reflection\Types\Collection;
 
 class ProductionController extends Controller
@@ -20,6 +21,7 @@ class ProductionController extends Controller
     private $rawMaterialBalanceModel;
     private $departmentsModel;
     private $productsModel;
+    private $user;
 
     public function __construct(){
         $this->inoutSetsModel           = new InOutSetsModel();
@@ -28,6 +30,7 @@ class ProductionController extends Controller
         $this->rawMaterialBalanceModel  = new RawMaterialBalanceModel();
         $this->departmentsModel         = new DepartmentsModel();
         $this->productsModel            = new ProductsModel();
+        $this->user                     = Auth::user();
     }
 
     /** ****************************** START ACTIONS ********************************** **/
@@ -116,12 +119,13 @@ class ProductionController extends Controller
 
     private function createFinishProduct($department_id, $finishProduct, $finishProductArr, $rawMaterials, $created_date)
     {
+        $user = Auth::user();
         //step 1 : create partiya
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
 
         $inoutSetArr = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            "user_id"           => $this->user->id,
             'inout'             => 1,
             'from_department_id'=> $department_id,
             'to_department_id'  => $department_id,
@@ -164,7 +168,7 @@ class ProductionController extends Controller
             "from_set_id"       => null,
             "count"             => $finishProductArr["count"],
             "inout"             => 1,
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $department_id,
             "to_department_id"  => $department_id,
             "department_id"     => $department_id,
@@ -195,7 +199,7 @@ class ProductionController extends Controller
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
         $inoutSetArr  = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            "user_id"           => $this->user->id,
             'inout'             => 2,
             'from_department_id'=> $inoutSet["from_department_id"],
             'to_department_id'  => $inoutSet["to_department_id"],
@@ -220,7 +224,7 @@ class ProductionController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => (-1) * $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $this->user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 "finish_raw_material_id"=> $finishProductData["finish_raw_material_id"],
@@ -259,7 +263,7 @@ class ProductionController extends Controller
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
         $inoutSetArr = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            'user_id'           => $this->user->id,
             'inout'             => 2,
             'from_department_id'=> $inoutSet["from_department_id"],
             'to_department_id'  => $inoutSet["to_department_id"],
@@ -284,7 +288,7 @@ class ProductionController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => (-1) * $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $this->user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -301,7 +305,7 @@ class ProductionController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $this->user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -380,7 +384,7 @@ class ProductionController extends Controller
             "set_id"            => $set_id,
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => (-1) * $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "finish_raw_material_id" => $finish_raw_material_id,
@@ -736,7 +740,7 @@ class ProductionController extends Controller
             "set_id"            => $set_id,
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => (-1) * $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,
@@ -753,7 +757,7 @@ class ProductionController extends Controller
             "set_id"            => $set_id,
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,

@@ -1,5 +1,7 @@
 <template>
-    <Modal v-model="rmStore.productDeleteModal" width="360">
+    <Modal v-model="rmStore.productDeleteModal" width="360"
+           @on-visible-change="rmStore.modalVisibility"
+    >
         <template #header>
             <p style="color:#f60;text-align:center">
                 <Icon type="ios-close-circle" size="20" />

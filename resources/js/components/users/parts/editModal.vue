@@ -1,7 +1,7 @@
 <template>
     <Modal
-        v-model="usersStore.addModal"
-        title="Фойдаланувчи қўшиш"
+        v-model="usersStore.editModal"
+        title="Фойдаланувчини тахрирлаш"
         :mask-closable = "false"
         :closable = "false"
         width="600"
@@ -32,8 +32,8 @@
 
         </Form>
         <template #footer>
-            <Button type="error" @click="usersStore.addModal=false">Беркитиш</Button>
-            <Button type="primary" @click="addUser" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Махсулот...':'Сақлаш'}}</Button>
+            <Button type="error" @click="usersStore.editModal=false">Беркитиш</Button>
+            <Button type="primary" @click="addUser" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Махсулот...':'Сақлаш'}}</Button>
         </template>
     </Modal>
 </template>
@@ -42,7 +42,7 @@
     import {useUsersStore} from "../../../stores/UsersStore";
 
     export default {
-        name: "addModal",
+        name: "edit Modal",
         setup() {
             const usersStore = useUsersStore()
 
@@ -50,7 +50,7 @@
         },
         data(){
             return {
-                isAdding: false,
+                isEditing: false,
 
                 fullName_err  : false,
                 role_id_err  : false,
@@ -62,7 +62,7 @@
         methods: {
             async addUser(){ //Add product
 
-                this.isAdding = true
+                this.isEditing = true
                 if(this.usersStore.user.fullName == '') {
                     this.is_invalid = true
                     this.fullName_err   = true
@@ -84,28 +84,23 @@
                     this.username_err   = false
                 }
 
-                if(this.usersStore.user.password == '') {
-                    this.is_invalid = true
-                    this.password_err   = true
-                } else {
-                    this.password_err   = false
-                }
-
                 if(this.is_invalid) {
                     this.is_invalid = false
-                    this.isAdding = false
+                    this.isEditing = false
                     return this.err('Барча катакларни тўлдириш мажбурий!')
                 }
 
-                const res = await this.callApi('post', '/app/add_user', this.usersStore.user)
-                console.log(res.data)
+                const res = await this.callApi('post', '/app/edit_user', this.usersStore.user)
+
+                this.isEditing = false
                 if(res.status === 200) {
-                    this.usersStore.users.unshift(res.data);
-                    this.s('Мувоффақиятли қўшилди!')
-                    this.usersStore.addModal = false
+                    this.usersStore.users[this.usersStore.rowIndex] = res.data;
+                    this.s('Мувоффақиятли сақланди!')
+                    this.usersStore.editModal = false
                     this.usersStore.user = {}
 
                 } else {
+
                     if(res.status == 422) {
                         if(res.data.errors.fullName) {
                             this.err(res.data.errors.fullName[0])
@@ -130,7 +125,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

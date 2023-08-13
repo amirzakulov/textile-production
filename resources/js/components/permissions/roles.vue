@@ -33,7 +33,7 @@
                 </div>
             </Col>
         </Row>
-        
+
     </div>
 
 
@@ -211,7 +211,6 @@ export default {
     async created(){
         const roles = await this.callApi('get', '/app/get_roles')
         this.roles = roles.data
-
     },
 }
 </script>

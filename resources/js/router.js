@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import home from './components/dashboard/home.vue'
-
+import login from './components/auth/login.vue'
 //Stock of raw materials
 import rawMaterials from './components/raw_materials/index.vue'
 import rmInOut from './components/raw_materials/rm_inout.vue'
@@ -35,6 +35,7 @@ import fgReports2 from './components/finished_products/reports2.vue'
 
 //Fashions
 import fashions from "./components/fashions/index.vue"
+import fashion from './components/fashions/fashion.vue'
 
 // Employees
 import employees from "./components/employees/index.vue"
@@ -54,12 +55,24 @@ import currencyRates from "./components/currency_rates/index.vue"
 //reports
 import reports from "./components/reports/index.vue"
 
+//Users
+import users from './components/users/index.vue'
+
+//permissions
+import roles from './components/permissions/roles.vue'
+import permissions from './components/permissions/assignRole.vue'
+
 const routes = [
     //project routes
     {
         path: '/',
         component: home,
         name: 'home'
+    },
+    {
+        path: '/login',
+        component: login,
+        name: 'login'
     },
 
     // rawMaterials
@@ -199,6 +212,11 @@ const routes = [
         component: fashions,
         name: 'fashions'
     },
+    {
+        path: '/fashions/:fashion_id',
+        component: fashion,
+        name: 'fashion'
+    },
 
 // Employees
     {
@@ -259,6 +277,25 @@ const routes = [
         name: 'reports'
     },
 
+
+    //Users
+    {
+        path: "/users",
+        component: users,
+        name: "users"
+    },
+
+    //permissions
+    {
+        path: "/roles",
+        component: roles,
+        name: "roles"
+    },
+    {
+        path: "/roles/permissions",
+        component: permissions,
+        name: "permissions"
+    },
 
 ]
 

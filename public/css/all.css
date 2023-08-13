@@ -489,7 +489,7 @@ textarea {
 }
 ._2menu_ceta {
     flex: 1 1;
-    padding: 0 26px;
+    /*padding: 0 26px;*/
     height: 100%;
 }
 .open_button li {

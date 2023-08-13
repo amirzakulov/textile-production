@@ -18,10 +18,12 @@ class AdminCheck
     public function handle(Request $request, Closure $next)
     {
 
+//        var_dump($request->path());
         if($request->path()=='app/login'){
             return $next($request);
         }
 
+//        var_dump(Auth::check());
         if(!Auth::check()){
             return response()->json([
                 'msg' => 'You are not allowed to access this route... ' ,

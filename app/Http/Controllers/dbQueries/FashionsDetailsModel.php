@@ -3,41 +3,40 @@
 namespace App\Http\Controllers\dbQueries;
 
 use App\Http\Controllers\Controller;
-use App\Models\Fashion;
 use App\Models\FashionDetail;
 use Illuminate\Support\Facades\DB;
 
-class FashionsModel extends Controller
+class FashionsDetailsModel extends Controller
 {
-    public function getFashions(){
-        return DB::table("fashions as f")
-            ->select("f.*", "c.name as category_name")
-            ->leftJoin("fashion_categories as c", "c.id", "=", "f.fashion_category_id")
+    public function getFashionDetails($fashion_id) {
+        return DB::table("fashion_details as fd")
+            ->select("fd.*", "p.name", "p.code", "p.country", "p.measurement", "p.color")
+            ->leftJoin("products as p", "p.id", "=", "fd.product_id")
+            ->where("fd.fashion_id", $fashion_id)
             ->get();
     }
 
-    public function getFashion($id){
-        return DB::table("fashions as f")
-            ->select("f.*", "c.name as category_name")
-            ->leftJoin("fashion_categories as c", "c.id", "=", "f.fashion_category_id")
-            ->where("f.id", $id)
+    public function getFashionDetail($id) {
+        return DB::table("fashion_details as fd")
+            ->select("fd.*", "p.name", "p.code", "p.country", "p.measurement", "p.color")
+            ->leftJoin("products as p", "p.id", "=", "fd.product_id")
+            ->where("fd.id", $id)
             ->first();
     }
 
-    public function addFashion($arr){
-        $fashion = Fashion::create($arr);
+    public function add($arr) {
+        $fashionDetail = FashionDetail::create($arr);
+        return $this->getFashionDetail($fashionDetail->id);
 
-        return $this->getFashion($fashion->id);
     }
 
-    public function editFashion($id, $arr){
-        Fashion::where("id", $id)->update($arr);
+    public function update($id, $arr) {
+        FashionDetail::where("id", $id)->update($arr);
 
-        return $this->getFashion($id);
+        return $this->getFashionDetail($id);
     }
 
-    public function deleteFashion($id){
-        FashionDetail::where('fashion_id', $id)->delete();
-        return Fashion::where('id', $id)->delete();
+    public function delete($id) {
+        return FashionDetail::where("id", $id)->delete();
     }
 }

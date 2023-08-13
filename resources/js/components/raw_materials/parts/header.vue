@@ -1,7 +1,7 @@
 <template>
     <ul class="nav nav-tabs ml-4">
         <li class="nav-item">
-            <router-link :to="{ name: 'rawMaterials', params: {category_id: 1} }" class="nav-link" :class="{ 'router-link-exact-active': subIsActive('/raw-materials/'+this.$route.params.category_id) }"><Icon type="md-menu" size="16" color="#000000" /> Хомашё омбор</router-link>
+            <router-link :to="{ name: 'rawMaterials', params: {category_id: 1} }" class="nav-link" :class="{ 'router-link-exact-active': defaultActiveTab('/raw-materials/'+this.$route.params.category_id) }"><Icon type="md-menu" size="16" color="#000000" /> Хомашё омбор</router-link>
         </li>
         <li class="nav-item">
             <router-link :to="{ name: 'rmInOut'}" class="nav-link" :class="{ 'router-link-exact-active': subIsActive('/raw-materials/inout') }">
@@ -36,6 +36,17 @@ export default {
             const paths = Array.isArray(input) ? input : [input]
             return paths.some(path => {
                 return this.$route.path.indexOf(path) === 0 // current path starts with this path string
+            })
+        },
+        defaultActiveTab(input) {
+            const paths = Array.isArray(input) ? input : [input]
+            const pathArray = window.location.pathname.split("/");
+            return paths.some(path => {
+                if(pathArray[2] === undefined) {
+                    return true;
+                } else {
+                    return this.$route.path.indexOf(path) === 0 // current path starts with this path string
+                }
             })
         },
 

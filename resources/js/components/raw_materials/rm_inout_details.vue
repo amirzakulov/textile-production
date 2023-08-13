@@ -1,7 +1,7 @@
 <template>
     <StockHeader />
     <div class="_1adminOverveiw_table_recent _box_shadow _border_radious bg-transparent border p-3">
-        <Row :gutter="8" class="">
+        <Row :gutter="8">
             <Col span="3">
                 <router-link :to="{ name: 'rmInOut'}" class="nav-link text-white1"><Icon type="ios-arrow-back" size="16" /> Орқага қайтиш</router-link>
             </Col>

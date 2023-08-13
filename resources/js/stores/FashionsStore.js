@@ -7,8 +7,16 @@ export const useFashionsStore = defineStore("fashionsStore", {
             editModal: false,
             deleteModal: false,
 
+            addFashionDetailsModal: false,
+            editFashionDetailsModal: false,
+            deleteFashionDetailsModal: false,
+
             fashions: [],
             fashion: {},
+
+            fashionDetails: [],
+            fashionDetail:  {},
+
             rowIndex: 0,
 
             categories: [],
@@ -17,5 +25,12 @@ export const useFashionsStore = defineStore("fashionsStore", {
 
     getters: {},
 
-    actions: {}
+    actions: {
+        modalVisibility(status){
+            if(!status) {
+                this.fashion        = {}
+                this.fashionDetail  = {}
+            }
+        },
+    }
 })

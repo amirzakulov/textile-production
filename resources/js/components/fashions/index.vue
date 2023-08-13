@@ -99,7 +99,7 @@ export default {
                                         title:"Ko'rish",
                                         type: 'success',
                                         size: 'small',
-                                        to: { name: 'fashion', params: {id:params.row.id} },
+                                        to: { name: 'fashion', params: {fashion_id:params.row.id} },
 
                                     }, {
                                         default() {

@@ -9,9 +9,9 @@ class FashionDetail extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "id",
         "fashion_id",
         "product_id",
         "count",
+        "price",
     ];
 }

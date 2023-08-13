@@ -18,10 +18,14 @@
         </Form>
 
         <ul class="nav nav-tabs bg-light">
-            <li class="nav-item" :class="{ 'router-link-active': subIsActive('/raw-materials/1') }">
-                <router-link :to="{ name: 'rawMaterials', params: {category_id: 1} }" class="nav-link"> Материаллар</router-link>
+            <li class="nav-item">
+                <router-link :to="{ name: 'rawMaterials', params: {category_id: 1} }"
+                             :class="{ 'router-link-exact-active': subIsActiveSecond('/raw-materials') }"
+                             class="nav-link">
+                    Материаллар
+                </router-link>
             </li>
-            <li class="nav-item" :class="{ 'router-link-active': subIsActive('/raw-materials/2') }">
+            <li class="nav-item">
                 <router-link :to="{ name: 'rawMaterials', params: {category_id: 2} }" class="nav-link">Фурнитура</router-link>
             </li>
         </ul>
@@ -138,6 +142,14 @@ export default {
             return paths.some(path => {
                 return this.$route.path.indexOf(path) === 0 // current path starts with this path string
             })
+        },
+        subIsActiveSecond(input) {
+            const pathArray = window.location.pathname.split("/");
+            if(pathArray[2] == 1 || pathArray[2] == undefined) {
+                return true;
+            } else {
+                return false;
+            }
         },
     },
     async created() {

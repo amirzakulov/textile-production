@@ -10,6 +10,7 @@ use App\Http\Controllers\dbQueries\RawMaterialBalanceModel;
 use App\Http\Controllers\dbQueries\DepartmentsModel;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FinishedProductsController extends Controller
 {
@@ -19,6 +20,7 @@ class FinishedProductsController extends Controller
     private $rawMaterialBalanceModel;
     private $departmentsModel;
     private $productsModel;
+    private $user;
 
     public function __construct(){
         $this->inoutSetsModel           = new InOutSetsModel();
@@ -27,6 +29,7 @@ class FinishedProductsController extends Controller
         $this->rawMaterialBalanceModel  = new RawMaterialBalanceModel();
         $this->departmentsModel         = new DepartmentsModel();
         $this->productsModel            = new ProductsModel();
+        $this->user                     = Auth::user();
     }
 
     /** ****************************** START ACTIONS ********************************** **/
@@ -64,7 +67,7 @@ class FinishedProductsController extends Controller
         $inoutSetName = idGenerate('inout_sets', 'name', 10, 'PT-');
         $inoutSetArr = [
             'name'              => $inoutSetName,
-            'user_id'           => 1,
+            "user_id"           => $this->user->id,
             'inout'             => 2,
             'from_department_id'=> $inoutSet["from_department_id"],
             'to_department_id'  => $inoutSet["to_department_id"],
@@ -89,7 +92,7 @@ class FinishedProductsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => (-1) * $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $this->user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -106,7 +109,7 @@ class FinishedProductsController extends Controller
                 "set_id"            => $set->id,
                 "from_set_id"       => $rawMaterial->set_id,
                 "count"             => $product["count"],
-                "user_id"           => 1,
+                "user_id"           => $this->user->id,
                 "from_department_id"=> $inoutSet["from_department_id"],
                 "to_department_id"  => $inoutSet["to_department_id"],
                 'created_date'      => $created_date,
@@ -258,7 +261,7 @@ class FinishedProductsController extends Controller
             "set_id"            => $set_id,
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => (-1) * $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,
@@ -275,7 +278,7 @@ class FinishedProductsController extends Controller
             "set_id"            => $set_id,
             "from_set_id"       => $rawMaterial->set_id,
             "count"             => $product["count"],
-            "user_id"           => 1,
+            "user_id"           => $this->user->id,
             "from_department_id"=> $inoutSet["from_department_id"],
             "to_department_id"  => $inoutSet["to_department_id"],
             "created_date"      => $created_date,
